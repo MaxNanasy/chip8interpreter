@@ -63,6 +63,7 @@ void Display::render()
 		}
 	}
 
+	// START TEST CODE
 	int i, j;
 	Uint8 buf;
 	Uint8 mem[] = {0xff, 0xaf, 0x87, 0x13 };
@@ -83,6 +84,7 @@ void Display::render()
 			buf <<= 1;
 		}
 	}
+	// END TEST CODE
 
 	if (SDL_MUSTLOCK(screen))
 	{
