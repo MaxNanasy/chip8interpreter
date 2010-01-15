@@ -26,7 +26,7 @@ void Display::clear()
 Uint32 Display::toggle_pixel(int pos_x, int pos_y)
 {
 	int x = pos_x * STEP_X;
-	int y = pos_y * STEP_X;
+	int y = pos_y * STEP_Y;
 
 	SDL_Rect square = { x, y, STEP_X, STEP_Y };
 	Uint32 color = pixels[x + y * pitch_px] ^ 0xffffff;
