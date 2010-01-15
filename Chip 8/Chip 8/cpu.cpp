@@ -1,10 +1,31 @@
+#include <vector>
 #include <cstdlib>
+#include <iostream>
+
 #include "cpu.h"
+#include "file_parser.h"
 
 CPU::CPU(Display& display)
 : display(display)
 {
+	std::vector<Uint8> rom_data;
+	std::vector<Uint8>::iterator it;
+	Uint8 *mem = &(this->mem[512]); // ROM loaded into memory at byte 513.
+
+	unsigned int mem_available = 4*KiB - 512; // First 512 bytes are reserved for interpreter.
+
 	initialize_font();
+	file_parser fp("C:\\Users\\Aaron\\Desktop\\15PUZZLE");
+	rom_data = fp.return_rom_data();
+	
+	if (rom_data.size() > mem_available)
+	{
+		cerr << "Rom is too large." << endl;
+		exit(1);
+	}
+
+	for (it = rom_data.begin(); it < rom_data.end(); it++, mem++)
+		*mem = *it;
 }
 
 CPU::~CPU()
