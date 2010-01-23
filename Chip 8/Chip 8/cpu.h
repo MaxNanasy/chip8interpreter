@@ -9,6 +9,7 @@ class CPU
 public:
 	CPU(Display& display);
 	~CPU();
+	void run();
 
 private:
 	static const unsigned int KiB = 1024;
@@ -26,16 +27,17 @@ private:
 	Uint8 mem[4 * KiB];	// Memory
 	
 	// These functions return parameters from the current opcode.
-	inline int get_X() { return (cur_op & 0x0F00) >> 2; } 
-	inline int get_Y() { return (cur_op & 0x00F0) >> 1; }
+	inline int get_X() { return (cur_op & 0x0F00) >> 8; } 
+	inline int get_Y() { return (cur_op & 0x00F0) >> 4; }
 	inline int get_N() { return (cur_op & 0x000F); }
 	inline int get_NN() { return (cur_op & 0x00FF); }
 	inline int get_NNN() { return (cur_op & 0x0FFF); }
 
-	// FILL THIS IN
+	// METHODS
 	void execute_opcode();	
 	void initialize_font();
-
+	void cycle();
+	
 	// OPCODES
 	void clear_screen();
 	void sub_return();
