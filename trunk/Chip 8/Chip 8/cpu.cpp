@@ -6,7 +6,7 @@
 #include "file_parser.h"
 
 CPU::CPU(Display& display)
-: display(display)
+: display(display), I_addr(0), PC(512), SP(15), t_delay(0), t_sound(0)
 {
 	std::vector<Uint8> rom_data;
 	std::vector<Uint8>::iterator it;
@@ -33,9 +33,38 @@ CPU::~CPU()
 	 //Purposely empty.
 }
 
+void CPU::run()
+{
+	I_addr = 0;
+	cur_op = 0xD005;
+	
+	while(1)
+	{
+		display.clear();
+		draw_sprite();
+		display.update();
+		I_addr += 5;
+	}
+	/*
+	while(1)
+	{
+		// XXX : Update timers
+		cycle();
+	}
+	*/
+}
+
+void CPU::cycle()
+{
+	cur_op = (mem[PC] << 8) + mem[PC + 1];
+	execute_opcode();
+	PC += 2;
+	display.update();
+}
+
 void CPU::execute_opcode()
 {
-	int op_1 = (cur_op & 0xF000) >> 3;
+	int op_1 = (cur_op & 0xF000) >> 12;
 	int op_4 = (cur_op & 0x000F);
 	int op_3and4 = (cur_op & 0x00FF);
 
@@ -158,7 +187,7 @@ void CPU::execute_opcode()
 		break;
 
 	case 0xA:
-		set_imm();
+		set_index();
 		break;
 
 	case 0xB:
@@ -401,15 +430,17 @@ void CPU::add()
 {
 	int X = get_X();
 	int Y = get_Y();
-	uint8_t prev = V[X];
+	uint8_t sum;
 	
-	V[X] = V[X] + V[Y];
+	sum = V[X] + V[Y];
 
-	// If the result is smaller than either addend, overflow has occured.
-	if ((V[X] < prev) || (V[X] < V[Y]))
+	// If the sum is smaller than either addend, overflow has occured.
+	if ((sum < V[X]) || (sum < V[Y]))
 		V[0xF] = 1;
 	else
 		V[0xF] = 0;
+
+	V[X] = sum;
 }
 
 /*
