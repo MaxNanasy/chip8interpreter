@@ -58,23 +58,11 @@ void CPU::load_rom(const char file_name[])
 
 void CPU::run()
 {
-	I_addr = 0;
-	cur_op = 0xD005;
-	
-	while(1)
-	{
-		display.clear();
-		draw_sprite();
-		display.update();
-		I_addr += 5;
-	}
-	/*
 	while(1)
 	{
 		// XXX : Update timers
 		cycle();
 	}
-	*/
 }
 
 void CPU::cycle()
@@ -319,6 +307,7 @@ void CPU::jump()
 	int NNN = get_NNN();
 
 	PC = NNN;
+	PC -= 2;
 }
 
 /*
@@ -331,6 +320,7 @@ void CPU::sub_call()
 
 	stack[SP--] = PC;
 	PC = NNN;
+	PC -= 2;
 }
 
 /*
@@ -561,6 +551,7 @@ void CPU::jump_offset()
 	int NNN = get_NNN();
 
 	PC = NNN + V[0];
+	PC -= 2;
 }
 
 /*
