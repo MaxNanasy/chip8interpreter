@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
 
 	Display display;
 	CPU cpu(display);
+	cpu.run();
 
-	return display.run();
+	return 0;
 }
