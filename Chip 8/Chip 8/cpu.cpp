@@ -157,15 +157,15 @@ void CPU::execute_opcode()
 			break;
 
 		case 0x1:
-			or();
+			or_op();
 			break;
 
 		case 0x2:
-			and();
+			and_op();
 			break;
 
 		case 0x3:
-			xor();
+			xor_op();
 			break;
 
 		case 0x4:
@@ -412,7 +412,7 @@ void CPU::set()
 * Opcode: 8XY1
 * Explanation: Sets VX to (VX or VY).
 */
-void CPU::or()
+void CPU::or_op()
 {
 	int X = get_X();
 	int Y = get_Y();
@@ -424,7 +424,7 @@ void CPU::or()
 * Opcode: 8XY2
 * Explanation: Sets VX to (VX and VY).
 */
-void CPU::and()
+void CPU::and_op()
 {
 	int X = get_X();
 	int Y = get_Y();
@@ -436,7 +436,7 @@ void CPU::and()
 * Opcode: 8XY3
 * Explanation: Sets VX to (VX xor VY).
 */
-void CPU::xor()
+void CPU::xor_op()
 {
 	int X = get_X();
 	int Y = get_Y();
@@ -595,7 +595,7 @@ void CPU::draw_sprite()
 	{
 		buf = mem[I_addr + i];
 
-		for (j = 0; j < sizeof(buf)*8; j++)
+		for (j = 0; j < (int) sizeof(buf)*8; j++)
 		{
 			if (buf & 0x80)
 				conflict |= display.toggle_pixel(X + j, Y + i);

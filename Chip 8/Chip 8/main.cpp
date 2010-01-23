@@ -19,8 +19,8 @@
 #include <stdlib.h>
 
 #include "SDL.h"
-#include "Display.h"
-#include "CPU.h"
+#include "display.h"
+#include "cpu.h"
 
 int main(int argc, char *argv[])
 {

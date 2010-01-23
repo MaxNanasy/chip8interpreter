@@ -19,7 +19,7 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include "SDL.h"
+#include <SDL.h>
 #include "display.h"
 
 class CPU 
@@ -68,9 +68,9 @@ private:
 	void set_imm();
 	void add_imm();
 	void set();
-	void or();
-	void and();
-	void xor();
+	void or_op();
+	void and_op();
+	void xor_op();
 	void add();
 	void x_sub_y();
 	void shift_right();
