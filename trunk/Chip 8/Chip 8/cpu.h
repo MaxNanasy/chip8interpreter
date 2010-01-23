@@ -10,6 +10,7 @@ public:
 	CPU(Display& display);
 	~CPU();
 	void run();
+	void load_rom(const char file_name[]);
 
 private:
 	static const unsigned int KiB = 1024;

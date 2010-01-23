@@ -8,6 +8,16 @@
 CPU::CPU(Display& display)
 : display(display), I_addr(0), PC(512), SP(15), t_delay(0), t_sound(0)
 {
+	// Purposely empty.
+}
+
+CPU::~CPU()
+{
+	 //Purposely empty.
+}
+
+void CPU::load_rom(const char file_name[])
+{
 	std::vector<Uint8> rom_data;
 	std::vector<Uint8>::iterator it;
 	Uint8 *mem = &(this->mem[512]); // ROM loaded into memory at byte 513.
@@ -15,7 +25,7 @@ CPU::CPU(Display& display)
 	unsigned int mem_available = 4*KiB - 512; // First 512 bytes are reserved for interpreter.
 
 	initialize_font();
-	file_parser fp("C:\\Users\\Aaron\\Desktop\\15PUZZLE");
+	file_parser fp(file_name);
 	rom_data = fp.return_rom_data();
 	
 	if (rom_data.size() > mem_available)
@@ -26,11 +36,6 @@ CPU::CPU(Display& display)
 
 	for (it = rom_data.begin(); it < rom_data.end(); it++, mem++)
 		*mem = *it;
-}
-
-CPU::~CPU()
-{
-	 //Purposely empty.
 }
 
 void CPU::run()
