@@ -189,6 +189,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\file_parser.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\main.cpp"
 				>
 			</File>
@@ -204,6 +208,10 @@
 			</File>
 			<File
 				RelativePath=".\display.h"
+				>
+			</File>
+			<File
+				RelativePath=".\file_parser.h"
 				>
 			</File>
 		</Filter>
