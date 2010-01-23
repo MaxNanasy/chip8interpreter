@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
 
 	Display display;
 	CPU cpu(display);
+	cpu.load_rom("C:\\Users\\Aaron\\Desktop\\15PUZZLE");
 	cpu.run();
 
 	return 0;
