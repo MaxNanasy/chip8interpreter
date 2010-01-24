@@ -19,14 +19,16 @@
 #include <vector>
 #include <cstdlib>
 #include <iostream>
+#include <algorithm>
+#include <ctime>
 
 #include "cpu.h"
 #include "file_parser.h"
 
 CPU::CPU(Display& display)
-: display(display), I_addr(0), PC(512), SP(15), t_delay(0), t_sound(0), program_active (true)
+: display(display), t_delay(0), t_sound(0), I_addr(0), PC(512), SP(15), program_active (true), latest_delay_set (get_time ())
 {
-	// Purposely empty.
+  //Purposely empty.
 }
 
 CPU::~CPU()
@@ -61,7 +63,7 @@ void CPU::run()
 	
 	while (program_active)
 	{
-		// XXX : Update timers
+		// XXX : Update sound timer
 		cycle();
 	}
 	
@@ -283,6 +285,13 @@ void CPU::execute_opcode()
 		// INVALID OPCODE
 		break;
 	}
+}
+
+clock_time CPU::get_time ()
+{
+  timespec timer;
+  clock_gettime (CLOCK_REALTIME, &timer);
+  return (timer.tv_sec * CLOCK_RES) + timer.tv_nsec;
 }
 
 /*
@@ -636,8 +645,9 @@ void CPU::skip_not_pressed()
 void CPU::load_delay_timer()
 {
 	int X = get_X();
+  clock_time elapsed_time = get_time () - latest_delay_set;
 
-	V[X] = t_delay;
+	V[X] = max (t_delay - elapsed_time * TIMER_RATIO, (float) 0);
 }
 
 /*
@@ -659,6 +669,7 @@ void CPU::set_delay_timer()
 	int X = get_X();
 
 	t_delay = V[X];
+  latest_delay_set = get_time ();
 }
 
 /*

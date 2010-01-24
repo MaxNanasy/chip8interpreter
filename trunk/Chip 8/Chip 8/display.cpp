@@ -23,7 +23,7 @@ Display::Display()
 	screen = SDL_SetVideoMode(WIN_W, WIN_H, 32, SDL_HWSURFACE);
 
 	if (screen == NULL) {
-		fprintf(stderr, "Unable to set %dx%d video: %s\n", (int) SDL_GetError(), WIN_W, WIN_H);
+		fprintf(stderr, "Unable to set %dx%d video: %s\n", WIN_W, WIN_H, SDL_GetError ());
 		exit(1);
 	}
 
