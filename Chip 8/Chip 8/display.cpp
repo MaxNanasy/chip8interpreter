@@ -57,3 +57,10 @@ Uint32 Display::toggle_pixel(int pos_x, int pos_y)
 
 	return color;
 }
+
+Uint8 Display::get_key ()
+{
+  SDL_Event event;
+  do SDL_WaitEvent (&event); while (event.type != SDL_KEYDOWN);
+  return event.key.keysym.unicode;
+}

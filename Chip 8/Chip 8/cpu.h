@@ -33,6 +33,7 @@ public:
 private:
 	static const unsigned int KiB = 1024;
 	static const int START_CHAR_DATA = 0x00;
+  static const int OPCODE_SIZE = 2;
 
 	Display& display;	// Pointer to the display.
 	Uint8 V[16];		// Data registers
@@ -44,6 +45,7 @@ private:
 	Uint16 stack[16];	// Stack: Only used to store return addresses when subroutines are called.
 	Uint16 cur_op;		// Current instruction
 	Uint8 mem[4 * KiB];	// Memory
+  bool program_active; // Program not terminated
 	
 	// These functions return parameters from the current opcode.
 	inline int get_X() { return (cur_op & 0x0F00) >> 8; } 
@@ -60,6 +62,7 @@ private:
 	// OPCODES
 	void clear_screen();
 	void sub_return();
+  void terminate_program();
 	void jump();
 	void sub_call();
 	void skip_equal_imm();

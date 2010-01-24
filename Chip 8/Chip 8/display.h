@@ -30,6 +30,7 @@ public:
 	void clear();	
 	Uint32 toggle_pixel(int x, int y);
 	void update();
+  Uint8 get_key ();
 
 private:
 	SDL_Surface *screen;	// Pointer to an SDL screen.
