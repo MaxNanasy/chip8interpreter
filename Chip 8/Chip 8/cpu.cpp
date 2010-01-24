@@ -58,13 +58,6 @@ void CPU::load_rom(const char file_name[])
 
 void CPU::run()
 {
-  /*while(1)
-  {
-		display.clear();
-		draw_sprite();
-		display.update();
-		I_addr += 5;
-  }*/
 	
 	while (program_active)
 	{
