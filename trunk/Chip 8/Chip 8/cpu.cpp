@@ -24,7 +24,7 @@
 #include "file_parser.h"
 
 CPU::CPU(Display& display)
-: display(display), I_addr(0), PC(512), SP(15), t_delay(0), t_sound(0)
+: display(display), I_addr(0), PC(512), SP(15), t_delay(0), t_sound(0), program_active (true)
 {
 	// Purposely empty.
 }
@@ -58,11 +58,20 @@ void CPU::load_rom(const char file_name[])
 
 void CPU::run()
 {
-	while(1)
+  /*while(1)
+  {
+		display.clear();
+		draw_sprite();
+		display.update();
+		I_addr += 5;
+  }*/
+	
+	while (program_active)
 	{
 		// XXX : Update timers
 		cycle();
 	}
+	
 }
 
 void CPU::cycle()
@@ -90,6 +99,10 @@ void CPU::execute_opcode()
 
 		case 0x00EE:
 			sub_return();
+			break;
+
+		case 0x00FD:
+			terminate_program();
 			break;
 
 		default:
@@ -295,7 +308,16 @@ void CPU::clear_screen()
 void CPU::sub_return()
 {
 	SP++;
-	PC = stack[SP];
+	PC = stack[SP] - OPCODE_SIZE;
+}
+
+/*
+* Opcode: 00FD
+* Explanation: Terminates program.
+*/
+void CPU::terminate_program()
+{
+  program_active = false;
 }
 
 /*
@@ -306,8 +328,7 @@ void CPU::jump()
 {
 	int NNN = get_NNN();
 
-	PC = NNN;
-	PC -= 2;
+	PC = NNN - OPCODE_SIZE;
 }
 
 /*
@@ -319,8 +340,7 @@ void CPU::sub_call()
 	int NNN = get_NNN();
 
 	stack[SP--] = PC;
-	PC = NNN;
-	PC -= 2;
+	PC = NNN - OPCODE_SIZE;
 }
 
 /*
@@ -550,8 +570,7 @@ void CPU::jump_offset()
 {
 	int NNN = get_NNN();
 
-	PC = NNN + V[0];
-	PC -= 2;
+	PC = NNN + V[0] - OPCODE_SIZE;
 }
 
 /*
@@ -634,7 +653,8 @@ void CPU::load_delay_timer()
 */
 void CPU::wait_on_press()
 {
-	// XXX: Fill this in.
+  int X = get_X ();
+  V [X] = display.get_key ();
 }
 
 /*
