@@ -24,6 +24,12 @@
 
 int main(int argc, char *argv[])
 {
+
+  if (argc < 2) {
+    fprintf (stderr, "Error: No argument to %s.\n  Usage: %s [BINARY_CHIP8_PROGRAM]\n", argv [0], argv [0]);
+    exit (1);
+  }
+
 	if ( SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO) < 0 )
 	{
 		fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
@@ -33,8 +39,10 @@ int main(int argc, char *argv[])
 
 	Display display;
 	CPU cpu(display);
-	cpu.load_rom("C:\\Users\\Aaron\\Desktop\\15PUZZLE");
+
+  cpu.load_rom(argv [1]);
 	cpu.run();
 
 	return 0;
+
 }
