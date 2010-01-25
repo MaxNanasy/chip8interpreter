@@ -58,20 +58,17 @@ void CPU::load_rom(const char file_name[])
 
 void CPU::run()
 {
-	
+
 	while (program_active)
-	{
-		// XXX : Update sound timer
 		cycle();
-	}
-	
+
 }
 
 void CPU::cycle()
 {
 	cur_op = (mem[PC] << 8) + mem[PC + 1];
 	execute_opcode();
-	PC += 2;
+	PC += OPCODE_SIZE;
 	display.update();
 }
 
@@ -305,8 +302,7 @@ void CPU::clear_screen()
 */
 void CPU::sub_return()
 {
-	SP++;
-	PC = stack[SP] - OPCODE_SIZE;
+	PC = stack[++SP] - OPCODE_SIZE;
 }
 
 /*
@@ -351,7 +347,7 @@ void CPU::skip_equal_imm()
 	int NN = get_NN();
 
 	if (V[X] == NN)
-		PC += 2;
+		PC += OPCODE_SIZE;
 }
 
 /*
@@ -364,7 +360,7 @@ void CPU::skip_not_equal_imm()
 	int NN = get_NN();
 
 	if (V[X] != NN)
-		PC += 2;
+		PC += OPCODE_SIZE;
 }
 
 /*
@@ -377,7 +373,7 @@ void CPU::skip_equal()
 	int Y = get_Y();
 
 	if (V[X] == V[Y])
-		PC += 2;
+		PC += OPCODE_SIZE;
 }
 
 /*
@@ -425,7 +421,7 @@ void CPU::or_op()
 	int X = get_X();
 	int Y = get_Y();
 
-	V[X] = V[X] | V[Y];
+	V[X] |= V[Y];
 }
 
 /*
@@ -437,7 +433,7 @@ void CPU::and_op()
 	int X = get_X();
 	int Y = get_Y();
 
-	V[X] = V[X] & V[Y];
+	V[X] &= V[Y];
 }
 
 /*
@@ -449,7 +445,7 @@ void CPU::xor_op()
 	int X = get_X();
 	int Y = get_Y();
 
-	V[X] = V[X] ^ V[Y];
+	V[X] ^= V[Y];
 }
 
 /*
@@ -489,7 +485,7 @@ void CPU::x_sub_y()
 	else
 		V[0xF] = 1;
 
-	V[X] = V[X] - V[Y];
+	V[X] -= V[Y];
 }
 
 /*
@@ -502,7 +498,7 @@ void CPU::shift_right()
 	int X = get_X();
 	
 	V[0xF] = V[X] & 0x01;
-	V[X] = V[X] >> 1;
+	V[X] >>= 1;
 }
 
 /*
@@ -533,7 +529,7 @@ void CPU::shift_left()
 	int X = get_X();
 
 	V[0xF] = V[X] & 0x80;
-	V[X] = V[X] << 1;
+	V[X] <<= 1;
 }
 
 /*
@@ -546,7 +542,7 @@ void CPU::skip_not_equal()
 	int Y = get_Y();
 
 	if (V[X] != V[Y])
-		PC += 2;
+		PC += OPCODE_SIZE;
 }
 
 /*
@@ -631,6 +627,7 @@ void CPU::skip_on_pressed()
 */
 void CPU::skip_not_pressed()
 {
+  PC += OPCODE_SIZE; // assume unpressed
 	// XXX: Fill this in.
 }
 
@@ -709,7 +706,14 @@ void CPU::set_I_to_char()
 */
 void CPU::store_BCD()
 {
-	// XXX: Fill this in.
+  int X = get_X ();
+  int x0 = V [X];
+  div_t x1 = div (x0     , 10);
+  div_t x2 = div (x1.quot, 10);
+
+  V [I    ] = x2.quot;
+  V [I + 1] = x2.rem ;
+  V [I + 2] = x1.rem ;
 }
 
 /*
