@@ -21,13 +21,14 @@
 
 #include <SDL.h>
 #include "display.h"
+#include "sound.h"
 
 typedef Uint64 clock_time;
 
 class CPU 
 {
 public:
-	CPU(Display& display);
+	CPU(Display& display, Sound& sound);
 	~CPU();
 	void run();
 	void load_rom(const char file_name[]);
@@ -37,12 +38,14 @@ private:
 	static const int START_CHAR_DATA = 0x00;
   static const int OPCODE_SIZE = 2;
   static const clock_time CLOCK_RES = 1000000000;
-  static const float TIMER_RATIO = 60 / (1.0 * CLOCK_RES);
+  static const clock_time TIMER_RES = 60;
+  static const float TIMER_RATIO = TIMER_RES / (1.0 * CLOCK_RES);
 
 	Display& display;	// Pointer to the display.
+  Sound& sound; // Pointer to sound.
 	Uint8 V[16];		// Data registers
 	Uint8 t_delay;		// Delay Timer
-	Uint8 t_sound;		// Sound timer
+  clock_time latest_delay_set; // Latest time delay timer was set.
 	Uint16 I_addr;		// Index address: pointer to location in memory.
 	Uint16 PC;			// Instruction address register
 	Uint16 SP;			// Stack pointer
@@ -50,7 +53,6 @@ private:
 	Uint16 cur_op;		// Current instruction
 	Uint8 mem[4 * KiB];	// Memory
   bool program_active; // Program not terminated
-  clock_time latest_delay_set; // Latest time delay timer was set.
 	
 	// These functions return parameters from the current opcode.
 	inline int get_X() { return (cur_op & 0x0F00) >> 8; } 

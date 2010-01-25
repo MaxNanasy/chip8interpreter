@@ -19,14 +19,12 @@
 #include <vector>
 #include <cstdlib>
 #include <iostream>
-#include <algorithm>
-#include <ctime>
 
 #include "cpu.h"
 #include "file_parser.h"
 
-CPU::CPU(Display& display)
-: display(display), t_delay(0), t_sound(0), I_addr(0), PC(512), SP(15), program_active (true), latest_delay_set (get_time ())
+CPU::CPU(Display& display, Sound& sound)
+  : display(display), sound (sound), t_delay(0), latest_delay_set (get_time ()), I_addr(0), PC(512), SP(15), program_active (true)
 {
   //Purposely empty.
 }
@@ -679,8 +677,7 @@ void CPU::set_delay_timer()
 void CPU::set_sound_timer()
 {
 	int X = get_X();
-	
-	t_sound = V[X];
+	sound.play (V[X] * 1000 / TIMER_RES);
 }
 
 /*
