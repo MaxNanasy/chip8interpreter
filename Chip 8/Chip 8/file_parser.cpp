@@ -20,7 +20,8 @@
 #include <fstream>
 #include <vector>
 
-#include "SDL.h"
+#include <SDL/SDL.h>
+
 #include "file_parser.h"
 
 using namespace std;

@@ -16,8 +16,9 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Chip-8 Interpreter.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <SDL.h>
 #include <cmath>
+
+#include <SDL/SDL.h>
 
 #include "sound.h"
 
