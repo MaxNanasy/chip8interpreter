@@ -602,7 +602,7 @@ void CPU::draw_sprite()
 		for (j = 0; j < (int) sizeof(buf)*8; j++)
 		{
 			if (buf & 0x80)
-				conflict |= display.toggle_pixel(X + j, Y + i);
+				conflict |= display.toggle_pixel(V [X] + j, V [Y] + i);
 
 			buf <<= 1;
 		}
