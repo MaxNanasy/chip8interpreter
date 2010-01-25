@@ -711,9 +711,9 @@ void CPU::store_BCD()
   div_t x1 = div (x0     , 10);
   div_t x2 = div (x1.quot, 10);
 
-  V [I    ] = x2.quot;
-  V [I + 1] = x2.rem ;
-  V [I + 2] = x1.rem ;
+  V [I_addr    ] = x2.quot;
+  V [I_addr + 1] = x2.rem ;
+  V [I_addr + 2] = x1.rem ;
 }
 
 /*
