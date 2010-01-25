@@ -41,7 +41,7 @@ void Display::clear()
 	SDL_FillRect(screen, NULL, 0x000000);
 }
 
-void Display::update(int x, int y, int w, int h)
+void Display::updateRect(int x, int y, int w, int h)
 {
   SDL_UpdateRect(screen, x * STEP_X, y * STEP_Y, w * STEP_X, h * STEP_Y);
 }

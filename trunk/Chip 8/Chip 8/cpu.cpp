@@ -608,7 +608,7 @@ void CPU::draw_sprite()
 		}
 	}
 
-  display.update (x, y, 8, N);
+  display.updateRect (x, y, sizeof(buf)*8, N);
 
 	V[0xF] = conflict;
 
