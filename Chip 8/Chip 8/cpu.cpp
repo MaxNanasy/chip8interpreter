@@ -654,6 +654,10 @@ void CPU::wait_on_press()
 {
   int X = get_X ();
   V [X] = display.get_key ();
+  /* XXX: This implementation, which theoretically accepts any one-byte Unicode
+   *  character, doesn't actually fulfill the specification, which uses only 16
+   *  keys for input.
+   */
 }
 
 /*
