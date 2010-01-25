@@ -20,7 +20,7 @@
 
 Display::Display()
 {
-	screen = SDL_SetVideoMode(WIN_W, WIN_H, 32, SDL_HWSURFACE);
+	screen = SDL_SetVideoMode(WIN_W, WIN_H, BPP, SDL_HWSURFACE);
 
 	if (screen == NULL) {
 		fprintf(stderr, "Unable to set %dx%d video: %s\n", WIN_W, WIN_H, SDL_GetError ());
@@ -28,7 +28,7 @@ Display::Display()
 	}
 
 	pixels = (Uint32 *)screen->pixels;
-	pitch_px = screen->pitch / 4;
+	pitch_px = (8 * screen->pitch) / BPP;
 }
 
 Display::~Display()
@@ -41,9 +41,9 @@ void Display::clear()
 	SDL_FillRect(screen, NULL, 0x000000);
 }
 
-void Display::update()
+void Display::update(int x, int y, int w, int h)
 {
-	SDL_UpdateRect(screen, 0, 0, WIN_W, WIN_H);
+  SDL_UpdateRect(screen, x * STEP_X, y * STEP_Y, w * STEP_X, h * STEP_Y);
 }
 
 Uint32 Display::toggle_pixel(int pos_x, int pos_y)

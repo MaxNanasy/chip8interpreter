@@ -31,7 +31,7 @@ CPU::CPU(Display& display, Sound& sound)
 
 CPU::~CPU()
 {
-	 //Purposely empty.
+  //Purposely empty.
 }
 
 void CPU::load_rom(const char file_name[])
@@ -48,7 +48,7 @@ void CPU::load_rom(const char file_name[])
 	
 	if (rom_data.size() > mem_available)
 	{
-		cerr << "Rom is too large." << endl;
+    cerr << "Rom is too large." << endl;
 		exit(1);
 	}
 
@@ -69,7 +69,6 @@ void CPU::cycle()
 	cur_op = (mem[PC] << 8) + mem[PC + 1];
 	execute_opcode();
 	PC += OPCODE_SIZE;
-	display.update();
 }
 
 void CPU::execute_opcode()
@@ -588,10 +587,11 @@ void CPU::set_rand()
 */
 void CPU::draw_sprite()
 {
+
 	int i, j;
 	Uint8 buf;
-	int X = get_X();
-	int Y = get_Y();
+	int X = get_X(); int x = V [X];
+	int Y = get_Y(); int y = V [Y];
 	int N = get_N();
 	int conflict = 0;
 
@@ -602,13 +602,16 @@ void CPU::draw_sprite()
 		for (j = 0; j < (int) sizeof(buf)*8; j++)
 		{
 			if (buf & 0x80)
-				conflict |= display.toggle_pixel(V [X] + j, V [Y] + i);
+				conflict |= display.toggle_pixel(x + j, y + i);
 
 			buf <<= 1;
 		}
 	}
 
+  display.update (x, y, 8, N);
+
 	V[0xF] = conflict;
+
 }
 
 /*
@@ -627,7 +630,7 @@ void CPU::skip_on_pressed()
 */
 void CPU::skip_not_pressed()
 {
-  PC += OPCODE_SIZE; // assume unpressed
+  PC += OPCODE_SIZE; // For now, assume key is always unpressed.
 	// XXX: Fill this in.
 }
 
