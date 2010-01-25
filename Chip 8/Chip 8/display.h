@@ -29,7 +29,7 @@ public:
 
 	void clear();	
 	Uint32 toggle_pixel(int x, int y);
-	void update();
+	void update(int, int, int, int);
   Uint8 get_key ();
 
 private:
@@ -41,6 +41,7 @@ private:
 	static const int WIN_H = 320; // Height of the SDL window.
 	static const int STEP_X = 10; // Width of a pixel drawn to the screen.
 	static const int STEP_Y = 10; // Height of a pixel drawn to the screen.
+  static const int BPP    = 32; // Bits per pixel
 };
 
 #endif // DISPLAY_H
