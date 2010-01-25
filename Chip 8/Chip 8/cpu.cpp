@@ -36,249 +36,249 @@ CPU::~CPU()
 
 void CPU::load_rom(const char file_name[])
 {
-	std::vector<Uint8> rom_data;
-	std::vector<Uint8>::iterator it;
-	Uint8 *mem = &(this->mem[512]); // ROM loaded into memory at byte 513.
+  std::vector<Uint8> rom_data;
+  std::vector<Uint8>::iterator it;
+  Uint8 *mem = &(this->mem[512]); // ROM loaded into memory at byte 513.
 
-	unsigned int mem_available = 4*KiB - 512; // First 512 bytes are reserved for interpreter.
+  unsigned int mem_available = 4*KiB - 512; // First 512 bytes are reserved for interpreter.
 
-	initialize_font();
-	file_parser fp(file_name);
-	rom_data = fp.return_rom_data();
-	
-	if (rom_data.size() > mem_available)
-	{
+  initialize_font();
+  file_parser fp(file_name);
+  rom_data = fp.return_rom_data();
+  
+  if (rom_data.size() > mem_available)
+  {
     cerr << "Rom is too large." << endl;
-		exit(1);
-	}
+    exit(1);
+  }
 
-	for (it = rom_data.begin(); it < rom_data.end(); it++, mem++)
-		*mem = *it;
+  for (it = rom_data.begin(); it < rom_data.end(); it++, mem++)
+    *mem = *it;
 }
 
 void CPU::run()
 {
 
-	while (program_active)
-		cycle();
+  while (program_active)
+    cycle();
 
 }
 
 void CPU::cycle()
 {
-	cur_op = (mem[PC] << 8) + mem[PC + 1];
-	execute_opcode();
-	PC += OPCODE_SIZE;
+  cur_op = (mem[PC] << 8) + mem[PC + 1];
+  execute_opcode();
+  PC += OPCODE_SIZE;
 }
 
 void CPU::execute_opcode()
 {
-	int op_1 = (cur_op & 0xF000) >> 12;
-	int op_4 = (cur_op & 0x000F);
-	int op_3and4 = (cur_op & 0x00FF);
+  int op_1 = (cur_op & 0xF000) >> 12;
+  int op_4 = (cur_op & 0x000F);
+  int op_3and4 = (cur_op & 0x00FF);
 
-	switch (op_1)
-	{
-	case 0x0: 
-		switch(cur_op)
-		{
-		case 0x00E0:
-			clear_screen();
-			break;
+  switch (op_1)
+  {
+  case 0x0: 
+    switch(cur_op)
+    {
+    case 0x00E0:
+      clear_screen();
+      break;
 
-		case 0x00EE:
-			sub_return();
-			break;
+    case 0x00EE:
+      sub_return();
+      break;
 
-		case 0x00FD:
-			terminate_program();
-			break;
+    case 0x00FD:
+      terminate_program();
+      break;
 
-		default:
-			// INVALID OPCODE
-			break;
-		}
+    default:
+      // INVALID OPCODE
+      break;
+    }
 
-		break;
+    break;
 
-	case 0x1:
-		jump();
-		break;
+  case 0x1:
+    jump();
+    break;
 
-	case 0x2:
-		sub_call();
-		break;
+  case 0x2:
+    sub_call();
+    break;
 
-	case 0x3:
-		skip_equal_imm();
-		break;
+  case 0x3:
+    skip_equal_imm();
+    break;
 
-	case 0x4:
-		skip_not_equal_imm();
-		break;
+  case 0x4:
+    skip_not_equal_imm();
+    break;
 
-	case 0x5:
-		switch (op_4)
-		{
-		case 0x0:
-			skip_equal();
-			break;
+  case 0x5:
+    switch (op_4)
+    {
+    case 0x0:
+      skip_equal();
+      break;
 
-		default: 
-			// INVALID OPCODE
-			break;
-		}
+    default: 
+      // INVALID OPCODE
+      break;
+    }
 
-		break;
+    break;
 
-	case 0x6:
-		set_imm();
-		break;
+  case 0x6:
+    set_imm();
+    break;
 
-	case 0x7:
-		add_imm();
-		break;
+  case 0x7:
+    add_imm();
+    break;
 
-	case 0x8:
-		switch (op_4)
-		{
-		case 0x0:
-			set();
-			break;
+  case 0x8:
+    switch (op_4)
+    {
+    case 0x0:
+      set();
+      break;
 
-		case 0x1:
-			or_op();
-			break;
+    case 0x1:
+      or_op();
+      break;
 
-		case 0x2:
-			and_op();
-			break;
+    case 0x2:
+      and_op();
+      break;
 
-		case 0x3:
-			xor_op();
-			break;
+    case 0x3:
+      xor_op();
+      break;
 
-		case 0x4:
-			add();
-			break;
+    case 0x4:
+      add();
+      break;
 
-		case 0x5:
-			x_sub_y();
-			break;
+    case 0x5:
+      x_sub_y();
+      break;
 
-		case 0x6:
-			shift_right();
-			break;
+    case 0x6:
+      shift_right();
+      break;
 
-		case 0x7:
-			y_sub_x();
-			break;
+    case 0x7:
+      y_sub_x();
+      break;
 
-		case 0xE:
-			shift_left();
-			break;
+    case 0xE:
+      shift_left();
+      break;
 
-		default:
-			// INVALID OPCODE
-			break;
-		}
+    default:
+      // INVALID OPCODE
+      break;
+    }
 
-		break;
+    break;
 
-	case 0x9:
-		switch (op_4)
-		{
-		case 0x0:
-			skip_not_equal();
-			break;
+  case 0x9:
+    switch (op_4)
+    {
+    case 0x0:
+      skip_not_equal();
+      break;
 
-		default:
-			// INVALID OPCODE
-			break;
-		}
+    default:
+      // INVALID OPCODE
+      break;
+    }
 
-		break;
+    break;
 
-	case 0xA:
-		set_index();
-		break;
+  case 0xA:
+    set_index();
+    break;
 
-	case 0xB:
-		jump_offset();
-		break;
+  case 0xB:
+    jump_offset();
+    break;
 
-	case 0xC:
-		set_rand();
-		break;
+  case 0xC:
+    set_rand();
+    break;
 
-	case 0xD:
-		draw_sprite();
-		break;
+  case 0xD:
+    draw_sprite();
+    break;
 
-	case 0xE:
-		switch (op_3and4)
-		{
-		case 0x9E:
-			skip_on_pressed();
-			break;
+  case 0xE:
+    switch (op_3and4)
+    {
+    case 0x9E:
+      skip_on_pressed();
+      break;
 
-		case 0xA1:
-			skip_not_pressed();
-			break;
+    case 0xA1:
+      skip_not_pressed();
+      break;
 
-		default:
-			// INVALID OPCODE
-			break;
-		}
+    default:
+      // INVALID OPCODE
+      break;
+    }
 
-		break;
+    break;
 
-	case 0xF:
-		switch (op_3and4)
-		{
-		case 0x07:
-			load_delay_timer();
-			break;
+  case 0xF:
+    switch (op_3and4)
+    {
+    case 0x07:
+      load_delay_timer();
+      break;
 
-		case 0x0A:
-			wait_on_press();
-			break;
+    case 0x0A:
+      wait_on_press();
+      break;
 
-		case 0x15:
-			set_delay_timer();
-			break;
+    case 0x15:
+      set_delay_timer();
+      break;
 
-		case 0x18:
-			set_sound_timer();
-			break;
+    case 0x18:
+      set_sound_timer();
+      break;
 
-		case 0x1E:
-			add_to_index();
-			break;
+    case 0x1E:
+      add_to_index();
+      break;
 
-		case 0x29:
-			set_I_to_char();
-			break;
+    case 0x29:
+      set_I_to_char();
+      break;
 
-		case 0x33:
-			store_BCD();
-			break;
+    case 0x33:
+      store_BCD();
+      break;
 
-		case 0x55:
-			save_regs_to_mem();
-			break;
+    case 0x55:
+      save_regs_to_mem();
+      break;
 
-		case 0x65:
-			load_regs_from_mem();
-			break;
-		}
+    case 0x65:
+      load_regs_from_mem();
+      break;
+    }
 
-		break;
+    break;
 
-	default:
-		// INVALID OPCODE
-		break;
-	}
+  default:
+    // INVALID OPCODE
+    break;
+  }
 }
 
 clock_time CPU::get_time ()
@@ -292,7 +292,7 @@ clock_time CPU::get_time ()
 */
 void CPU::clear_screen()
 {
-	display.clear();
+  display.clear();
 }
 
 /*
@@ -301,7 +301,7 @@ void CPU::clear_screen()
 */
 void CPU::sub_return()
 {
-	PC = stack[++SP] - OPCODE_SIZE;
+  PC = stack[++SP] - OPCODE_SIZE;
 }
 
 /*
@@ -319,9 +319,9 @@ void CPU::terminate_program()
 */
 void CPU::jump()
 {
-	int NNN = get_NNN();
+  int NNN = get_NNN();
 
-	PC = NNN - OPCODE_SIZE;
+  PC = NNN - OPCODE_SIZE;
 }
 
 /*
@@ -330,10 +330,10 @@ void CPU::jump()
 */
 void CPU::sub_call()
 {
-	int NNN = get_NNN();
+  int NNN = get_NNN();
 
-	stack[SP--] = PC;
-	PC = NNN - OPCODE_SIZE;
+  stack[SP--] = PC;
+  PC = NNN - OPCODE_SIZE;
 }
 
 /*
@@ -342,11 +342,11 @@ void CPU::sub_call()
 */
 void CPU::skip_equal_imm()
 {
-	int X = get_X();
-	int NN = get_NN();
+  int X = get_X();
+  int NN = get_NN();
 
-	if (V[X] == NN)
-		PC += OPCODE_SIZE;
+  if (V[X] == NN)
+    PC += OPCODE_SIZE;
 }
 
 /*
@@ -355,11 +355,11 @@ void CPU::skip_equal_imm()
 */
 void CPU::skip_not_equal_imm()
 {
-	int X = get_X();
-	int NN = get_NN();
+  int X = get_X();
+  int NN = get_NN();
 
-	if (V[X] != NN)
-		PC += OPCODE_SIZE;
+  if (V[X] != NN)
+    PC += OPCODE_SIZE;
 }
 
 /*
@@ -368,11 +368,11 @@ void CPU::skip_not_equal_imm()
 */
 void CPU::skip_equal()
 {
-	int X = get_X();
-	int Y = get_Y();
+  int X = get_X();
+  int Y = get_Y();
 
-	if (V[X] == V[Y])
-		PC += OPCODE_SIZE;
+  if (V[X] == V[Y])
+    PC += OPCODE_SIZE;
 }
 
 /*
@@ -381,10 +381,10 @@ void CPU::skip_equal()
 */
 void CPU::set_imm()
 {
-	int X = get_X();
-	int NN = get_NN();
+  int X = get_X();
+  int NN = get_NN();
 
-	V[X] = NN;
+  V[X] = NN;
 }
 
 /*
@@ -393,10 +393,10 @@ void CPU::set_imm()
 */
 void CPU::add_imm()
 {
-	int X = get_X();
-	int NN = get_NN();
+  int X = get_X();
+  int NN = get_NN();
 
-	V[X] += NN;
+  V[X] += NN;
 }
 
 /*
@@ -405,10 +405,10 @@ void CPU::add_imm()
 */
 void CPU::set()
 {
-	int X = get_X();
-	int Y = get_Y();
+  int X = get_X();
+  int Y = get_Y();
 
-	V[X] = V[Y];
+  V[X] = V[Y];
 }
 
 /*
@@ -417,10 +417,10 @@ void CPU::set()
 */
 void CPU::or_op()
 {
-	int X = get_X();
-	int Y = get_Y();
+  int X = get_X();
+  int Y = get_Y();
 
-	V[X] |= V[Y];
+  V[X] |= V[Y];
 }
 
 /*
@@ -429,10 +429,10 @@ void CPU::or_op()
 */
 void CPU::and_op()
 {
-	int X = get_X();
-	int Y = get_Y();
+  int X = get_X();
+  int Y = get_Y();
 
-	V[X] &= V[Y];
+  V[X] &= V[Y];
 }
 
 /*
@@ -441,10 +441,10 @@ void CPU::and_op()
 */
 void CPU::xor_op()
 {
-	int X = get_X();
-	int Y = get_Y();
+  int X = get_X();
+  int Y = get_Y();
 
-	V[X] ^= V[Y];
+  V[X] ^= V[Y];
 }
 
 /*
@@ -454,19 +454,19 @@ void CPU::xor_op()
 */
 void CPU::add()
 {
-	int X = get_X();
-	int Y = get_Y();
-	uint8_t sum;
-	
-	sum = V[X] + V[Y];
+  int X = get_X();
+  int Y = get_Y();
+  uint8_t sum;
+  
+  sum = V[X] + V[Y];
 
-	// If the sum is smaller than either addend, overflow has occured.
-	if ((sum < V[X]) || (sum < V[Y]))
-		V[0xF] = 1;
-	else
-		V[0xF] = 0;
+  // If the sum is smaller than either addend, overflow has occured.
+  if ((sum < V[X]) || (sum < V[Y]))
+    V[0xF] = 1;
+  else
+    V[0xF] = 0;
 
-	V[X] = sum;
+  V[X] = sum;
 }
 
 /*
@@ -476,15 +476,15 @@ void CPU::add()
 */
 void CPU::x_sub_y()
 {
-	int X = get_X();
-	int Y = get_Y();
-	
-	if (V[X] < V[Y]) 
-		V[0xF] = 0;
-	else
-		V[0xF] = 1;
+  int X = get_X();
+  int Y = get_Y();
+  
+  if (V[X] < V[Y]) 
+    V[0xF] = 0;
+  else
+    V[0xF] = 1;
 
-	V[X] -= V[Y];
+  V[X] -= V[Y];
 }
 
 /*
@@ -494,10 +494,10 @@ void CPU::x_sub_y()
 */
 void CPU::shift_right()
 {
-	int X = get_X();
-	
-	V[0xF] = V[X] & 0x01;
-	V[X] >>= 1;
+  int X = get_X();
+  
+  V[0xF] = V[X] & 0x01;
+  V[X] >>= 1;
 }
 
 /*
@@ -507,15 +507,15 @@ void CPU::shift_right()
 */
 void CPU::y_sub_x()
 {
-	int X = get_X();
-	int Y = get_Y();
+  int X = get_X();
+  int Y = get_Y();
 
-	if (V[Y] < V[X])
-		V[0xF] = 0;
-	else
-		V[0xF] = 1;
+  if (V[Y] < V[X])
+    V[0xF] = 0;
+  else
+    V[0xF] = 1;
 
-	V[X] = V[Y] - V[X];
+  V[X] = V[Y] - V[X];
 }
 
 /*
@@ -525,10 +525,10 @@ void CPU::y_sub_x()
 */
 void CPU::shift_left()
 {
-	int X = get_X();
+  int X = get_X();
 
-	V[0xF] = V[X] & 0x80;
-	V[X] <<= 1;
+  V[0xF] = V[X] & 0x80;
+  V[X] <<= 1;
 }
 
 /*
@@ -537,11 +537,11 @@ void CPU::shift_left()
 */
 void CPU::skip_not_equal()
 {
-	int X = get_X();
-	int Y = get_Y();
+  int X = get_X();
+  int Y = get_Y();
 
-	if (V[X] != V[Y])
-		PC += OPCODE_SIZE;
+  if (V[X] != V[Y])
+    PC += OPCODE_SIZE;
 }
 
 /*
@@ -550,9 +550,9 @@ void CPU::skip_not_equal()
 */
 void CPU::set_index()
 {
-	int NNN = get_NNN();
+  int NNN = get_NNN();
 
-	I_addr = NNN;
+  I_addr = NNN;
 }
 
 /*
@@ -561,9 +561,9 @@ void CPU::set_index()
 */
 void CPU::jump_offset()
 {
-	int NNN = get_NNN();
+  int NNN = get_NNN();
 
-	PC = NNN + V[0] - OPCODE_SIZE;
+  PC = NNN + V[0] - OPCODE_SIZE;
 }
 
 /*
@@ -572,10 +572,10 @@ void CPU::jump_offset()
 */
 void CPU::set_rand()
 {
-	int X = get_X();
-	int NN = get_NN();
+  int X = get_X();
+  int NN = get_NN();
 
-	V[X] = rand() & NN;
+  V[X] = rand() & NN;
 }
 
 /*
@@ -588,29 +588,29 @@ void CPU::set_rand()
 void CPU::draw_sprite()
 {
 
-	int i, j;
-	Uint8 buf;
-	int X = get_X(); int x = V [X];
-	int Y = get_Y(); int y = V [Y];
-	int N = get_N();
-	int conflict = 0;
+  int i, j;
+  Uint8 buf;
+  int X = get_X(); int x = V [X];
+  int Y = get_Y(); int y = V [Y];
+  int N = get_N();
+  int conflict = 0;
 
-	for (i = 0; i < N; i++)
-	{
-		buf = mem[I_addr + i];
+  for (i = 0; i < N; i++)
+  {
+    buf = mem[I_addr + i];
 
-		for (j = 0; j < (int) sizeof(buf)*8; j++)
-		{
-			if (buf & 0x80)
-				conflict |= display.toggle_pixel(x + j, y + i);
+    for (j = 0; j < (int) sizeof(buf)*8; j++)
+    {
+      if (buf & 0x80)
+        conflict |= display.toggle_pixel(x + j, y + i);
 
-			buf <<= 1;
-		}
-	}
+      buf <<= 1;
+    }
+  }
 
   display.updateRect (x, y, sizeof(buf)*8, N);
 
-	V[0xF] = conflict;
+  V[0xF] = conflict;
 
 }
 
@@ -620,7 +620,7 @@ void CPU::draw_sprite()
 */
 void CPU::skip_on_pressed()
 {
-	// XXX: Fill this in.
+  // XXX: Fill this in.
 }
 
 /*
@@ -631,7 +631,7 @@ void CPU::skip_on_pressed()
 void CPU::skip_not_pressed()
 {
   PC += OPCODE_SIZE; // For now, assume key is always unpressed.
-	// XXX: Fill this in.
+  // XXX: Fill this in.
 }
 
 /*
@@ -640,10 +640,10 @@ void CPU::skip_not_pressed()
 */
 void CPU::load_delay_timer()
 {
-	int X = get_X();
+  int X = get_X();
   clock_time elapsed_time = get_time () - latest_delay_set;
 
-	V[X] = max (t_delay - elapsed_time * TIMER_RATIO, (float) 0);
+  V[X] = max (t_delay - elapsed_time * TIMER_RATIO, (float) 0);
 }
 
 /*
@@ -666,9 +666,9 @@ void CPU::wait_on_press()
 */
 void CPU::set_delay_timer()
 {
-	int X = get_X();
+  int X = get_X();
 
-	t_delay = V[X];
+  t_delay = V[X];
   latest_delay_set = get_time ();
 }
 
@@ -678,8 +678,8 @@ void CPU::set_delay_timer()
 */
 void CPU::set_sound_timer()
 {
-	int X = get_X();
-	sound.play (V[X] * 1000 / TIMER_RES);
+  int X = get_X();
+  sound.play (V[X] * 1000 / TIMER_RES);
 }
 
 /*
@@ -688,9 +688,9 @@ void CPU::set_sound_timer()
 */
 void CPU::add_to_index()
 {
-	int X = get_X();
+  int X = get_X();
 
-	I_addr += V[X];
+  I_addr += V[X];
 }
 
 /*
@@ -700,10 +700,10 @@ void CPU::add_to_index()
 */
 void CPU::set_I_to_char()
 {
-	int X = get_X();
-	int character = V[X] * 5; // Each character takes 5 bytes.
+  int X = get_X();
+  int character = V[X] * 5; // Each character takes 5 bytes.
 
-	I_addr = START_CHAR_DATA + character;
+  I_addr = START_CHAR_DATA + character;
 }
 
 /*
@@ -729,10 +729,10 @@ void CPU::store_BCD()
 */
 void CPU::save_regs_to_mem()
 {
-	int X = get_X();
+  int X = get_X();
 
-	for (int i = 0; i <= X; i++)
-		mem[I_addr + i] = V[i];
+  for (int i = 0; i <= X; i++)
+    mem[I_addr + i] = V[i];
 }
 
 /*
@@ -741,10 +741,10 @@ void CPU::save_regs_to_mem()
 */
 void CPU::load_regs_from_mem()
 {
-	int X = get_X();
+  int X = get_X();
 
-	for (int i = 0; i <= X; i++)
-		V[i] = mem[I_addr + i];
+  for (int i = 0; i <= X; i++)
+    V[i] = mem[I_addr + i];
 }
 
 /*
@@ -755,117 +755,117 @@ void CPU::load_regs_from_mem()
 */
 void CPU::initialize_font()
 {
-	int x = START_CHAR_DATA; 
+  int x = START_CHAR_DATA; 
 
-	// "0"
-	mem[x++] = 0xF0;
-	mem[x++] = 0x90;
-	mem[x++] = 0x90;
-	mem[x++] = 0x90;
-	mem[x++] = 0xF0;
+  // "0"
+  mem[x++] = 0xF0;
+  mem[x++] = 0x90;
+  mem[x++] = 0x90;
+  mem[x++] = 0x90;
+  mem[x++] = 0xF0;
 
-	// "1"
-	mem[x++] = 0x20;
-	mem[x++] = 0x60;
-	mem[x++] = 0x20;
-	mem[x++] = 0x20;
-	mem[x++] = 0x70;
+  // "1"
+  mem[x++] = 0x20;
+  mem[x++] = 0x60;
+  mem[x++] = 0x20;
+  mem[x++] = 0x20;
+  mem[x++] = 0x70;
 
-	// "2"
-	mem[x++] = 0xF0;
-	mem[x++] = 0x10;
-	mem[x++] = 0xF0;
-	mem[x++] = 0x80;
-	mem[x++] = 0xF0;
+  // "2"
+  mem[x++] = 0xF0;
+  mem[x++] = 0x10;
+  mem[x++] = 0xF0;
+  mem[x++] = 0x80;
+  mem[x++] = 0xF0;
 
-	// "3"
-	mem[x++] = 0xF0;
-	mem[x++] = 0x10;
-	mem[x++] = 0xF0;
-	mem[x++] = 0x10;
-	mem[x++] = 0xF0;
+  // "3"
+  mem[x++] = 0xF0;
+  mem[x++] = 0x10;
+  mem[x++] = 0xF0;
+  mem[x++] = 0x10;
+  mem[x++] = 0xF0;
 
-	// "4"
-	mem[x++] = 0x90;
-	mem[x++] = 0x90;
-	mem[x++] = 0xF0;
-	mem[x++] = 0x10;
-	mem[x++] = 0x10;
+  // "4"
+  mem[x++] = 0x90;
+  mem[x++] = 0x90;
+  mem[x++] = 0xF0;
+  mem[x++] = 0x10;
+  mem[x++] = 0x10;
 
-	// "5"
-	mem[x++] = 0xF0;
-	mem[x++] = 0x80;
-	mem[x++] = 0xF0;
-	mem[x++] = 0x10;
-	mem[x++] = 0xF0;
+  // "5"
+  mem[x++] = 0xF0;
+  mem[x++] = 0x80;
+  mem[x++] = 0xF0;
+  mem[x++] = 0x10;
+  mem[x++] = 0xF0;
 
-	// "6"
-	mem[x++] = 0xF0;
-	mem[x++] = 0x80;
-	mem[x++] = 0xF0;
-	mem[x++] = 0x90;
-	mem[x++] = 0xF0;
+  // "6"
+  mem[x++] = 0xF0;
+  mem[x++] = 0x80;
+  mem[x++] = 0xF0;
+  mem[x++] = 0x90;
+  mem[x++] = 0xF0;
 
-	// "7"
-	mem[x++] = 0xF0;
-	mem[x++] = 0x10;
-	mem[x++] = 0x20;
-	mem[x++] = 0x40;
-	mem[x++] = 0x40;
+  // "7"
+  mem[x++] = 0xF0;
+  mem[x++] = 0x10;
+  mem[x++] = 0x20;
+  mem[x++] = 0x40;
+  mem[x++] = 0x40;
 
-	// "8"
-	mem[x++] = 0xF0;
-	mem[x++] = 0x90;
-	mem[x++] = 0xF0;
-	mem[x++] = 0x90;
-	mem[x++] = 0xF0;
+  // "8"
+  mem[x++] = 0xF0;
+  mem[x++] = 0x90;
+  mem[x++] = 0xF0;
+  mem[x++] = 0x90;
+  mem[x++] = 0xF0;
 
-	// "9"
-	mem[x++] = 0xF0;
-	mem[x++] = 0x90;
-	mem[x++] = 0xF0;
-	mem[x++] = 0X10;
-	mem[x++] = 0XF0;
+  // "9"
+  mem[x++] = 0xF0;
+  mem[x++] = 0x90;
+  mem[x++] = 0xF0;
+  mem[x++] = 0X10;
+  mem[x++] = 0XF0;
 
-	// "A"
-	mem[x++] = 0xF0;
-	mem[x++] = 0x90;
-	mem[x++] = 0xF0;
-	mem[x++] = 0x90;
-	mem[x++] = 0x90;
+  // "A"
+  mem[x++] = 0xF0;
+  mem[x++] = 0x90;
+  mem[x++] = 0xF0;
+  mem[x++] = 0x90;
+  mem[x++] = 0x90;
 
-	// "B"
-	mem[x++] = 0xE0;
-	mem[x++] = 0x90;
-	mem[x++] = 0xE0;
-	mem[x++] = 0x90;
-	mem[x++] = 0xE0;
+  // "B"
+  mem[x++] = 0xE0;
+  mem[x++] = 0x90;
+  mem[x++] = 0xE0;
+  mem[x++] = 0x90;
+  mem[x++] = 0xE0;
 
-	// "C"
-	mem[x++] = 0xF0;
-	mem[x++] = 0x80;
-	mem[x++] = 0x80;
-	mem[x++] = 0x80;
-	mem[x++] = 0xF0;
+  // "C"
+  mem[x++] = 0xF0;
+  mem[x++] = 0x80;
+  mem[x++] = 0x80;
+  mem[x++] = 0x80;
+  mem[x++] = 0xF0;
 
-	// "D"
-	mem[x++] = 0xE0;
-	mem[x++] = 0x90;
-	mem[x++] = 0x90;
-	mem[x++] = 0x90;
-	mem[x++] = 0xE0;
+  // "D"
+  mem[x++] = 0xE0;
+  mem[x++] = 0x90;
+  mem[x++] = 0x90;
+  mem[x++] = 0x90;
+  mem[x++] = 0xE0;
 
-	// "E"
-	mem[x++] = 0xF0;
-	mem[x++] = 0x80;
-	mem[x++] = 0xF0;
-	mem[x++] = 0x80;
-	mem[x++] = 0xF0;
+  // "E"
+  mem[x++] = 0xF0;
+  mem[x++] = 0x80;
+  mem[x++] = 0xF0;
+  mem[x++] = 0x80;
+  mem[x++] = 0xF0;
 
-	// "F"
-	mem[x++] = 0xF0;
-	mem[x++] = 0x80;
-	mem[x++] = 0xF0;
-	mem[x++] = 0x80;
-	mem[x++] = 0x80;
+  // "F"
+  mem[x++] = 0xF0;
+  mem[x++] = 0x80;
+  mem[x++] = 0xF0;
+  mem[x++] = 0x80;
+  mem[x++] = 0x80;
 }

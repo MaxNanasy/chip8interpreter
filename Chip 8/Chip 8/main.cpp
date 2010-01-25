@@ -32,20 +32,20 @@ int main(int argc, char *argv[])
     exit (1);
   }
 
-	if ( SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0 )
-	{
-		fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
-		exit(1);
-	}
-	atexit(SDL_Quit);
+  if ( SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0 )
+  {
+    fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
+    exit(1);
+  }
+  atexit(SDL_Quit);
 
-	Display display;
+  Display display;
   Sound sound (100);
-	CPU cpu(display, sound);
+  CPU cpu(display, sound);
 
   cpu.load_rom(argv [1]);
-	cpu.run();
+  cpu.run();
 
-	return 0;
+  return 0;
 
 }
