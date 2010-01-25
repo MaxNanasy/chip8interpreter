@@ -63,6 +63,10 @@ void Sound::play (Uint32 duration)
     if (duration) {
       on ();
       timerID = SDL_AddTimer (duration, static_timer_callback, this);
+      if (! timerID) {
+        fprintf(stderr, "Unable to add timer: %s\n", SDL_GetError ());
+        exit (1);
+      }
     }
     else {
       off ();

@@ -58,10 +58,8 @@ void CPU::load_rom(const char file_name[])
 
 void CPU::run()
 {
-
   while (program_active)
     cycle();
-
 }
 
 void CPU::cycle()
@@ -95,7 +93,7 @@ void CPU::execute_opcode()
       break;
 
     default:
-      // INVALID OPCODE
+      invalid_opcode();
       break;
     }
 
@@ -125,7 +123,7 @@ void CPU::execute_opcode()
       break;
 
     default: 
-      // INVALID OPCODE
+      invalid_opcode();
       break;
     }
 
@@ -179,7 +177,7 @@ void CPU::execute_opcode()
       break;
 
     default:
-      // INVALID OPCODE
+      invalid_opcode();
       break;
     }
 
@@ -193,7 +191,7 @@ void CPU::execute_opcode()
       break;
 
     default:
-      // INVALID OPCODE
+      invalid_opcode();
       break;
     }
 
@@ -227,7 +225,7 @@ void CPU::execute_opcode()
       break;
 
     default:
-      // INVALID OPCODE
+      invalid_opcode();
       break;
     }
 
@@ -276,7 +274,7 @@ void CPU::execute_opcode()
     break;
 
   default:
-    // INVALID OPCODE
+    invalid_opcode();
     break;
   }
 }
@@ -745,6 +743,16 @@ void CPU::load_regs_from_mem()
 
   for (int i = 0; i <= X; i++)
     V[i] = mem[I_addr + i];
+}
+
+/*
+ * Opcode: <Other>
+ * Explanation: System errors out because of an invalid opcode.
+ */
+void CPU::invalid_opcode()
+{
+  fprintf (stderr, "Invalid opcode: %.4X\n", cur_op);
+  exit (1);
 }
 
 /*
