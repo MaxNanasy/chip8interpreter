@@ -20,25 +20,25 @@
 
 Display::Display()
 {
-	screen = SDL_SetVideoMode(WIN_W, WIN_H, BPP, SDL_HWSURFACE);
+  screen = SDL_SetVideoMode(WIN_W, WIN_H, BPP, SDL_HWSURFACE);
 
-	if (screen == NULL) {
-		fprintf(stderr, "Unable to set %dx%d video: %s\n", WIN_W, WIN_H, SDL_GetError ());
-		exit(1);
-	}
+  if (screen == NULL) {
+    fprintf(stderr, "Unable to set %dx%d video: %s\n", WIN_W, WIN_H, SDL_GetError ());
+    exit(1);
+  }
 
-	pixels = (Uint32 *)screen->pixels;
-	pitch_px = (8 * screen->pitch) / BPP;
+  pixels = (Uint32 *)screen->pixels;
+  pitch_px = (8 * screen->pitch) / BPP;
 }
 
 Display::~Display()
 {
-	// Purposely empty.
+  // Purposely empty.
 }
 
 void Display::clear()
 {
-	SDL_FillRect(screen, NULL, 0x000000);
+  SDL_FillRect(screen, NULL, 0x000000);
 }
 
 void Display::updateRect(int x, int y, int w, int h)
@@ -48,14 +48,14 @@ void Display::updateRect(int x, int y, int w, int h)
 
 Uint32 Display::toggle_pixel(int pos_x, int pos_y)
 {
-	int x = pos_x * STEP_X;
-	int y = pos_y * STEP_Y;
-	SDL_Rect square = { x, y, STEP_X, STEP_Y };
+  int x = pos_x * STEP_X;
+  int y = pos_y * STEP_Y;
+  SDL_Rect square = { x, y, STEP_X, STEP_Y };
 
-	Uint32 color = pixels[x + y * pitch_px] ^ 0xffffff;
-	SDL_FillRect(screen, &square, color);
+  Uint32 color = pixels[x + y * pitch_px] ^ 0xffffff;
+  SDL_FillRect(screen, &square, color);
 
-	return color;
+  return color;
 }
 
 Uint8 Display::get_key ()
