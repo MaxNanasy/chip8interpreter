@@ -525,7 +525,7 @@ void CPU::shift_left()
 {
   int X = get_X();
 
-  V[0xF] = V[X] & 0x80;
+  V[0xF] = (V[X] & 0x80) != 0;
   V[X] <<= 1;
 }
 

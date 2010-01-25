@@ -75,7 +75,7 @@ void Sound::play (Uint32 duration)
   } SDL_mutexV (id_mutex);
 }
 
-Uint32 Sound::timer_callback (Uint32 duration)
+Uint32 Sound::timer_callback (Uint32)
 {
   SDL_mutexP (id_mutex); {
     off ();
