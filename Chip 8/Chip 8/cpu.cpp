@@ -287,9 +287,7 @@ void CPU::execute_opcode()
 
 clock_time CPU::get_time ()
 {
-  timespec timer;
-  clock_gettime (CLOCK_REALTIME, &timer);
-  return (timer.tv_sec * CLOCK_RES) + timer.tv_nsec;
+  return SDL_GetTicks ();
 }
 
 /*
