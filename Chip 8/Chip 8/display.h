@@ -29,7 +29,7 @@ public:
 
 	void clear();	
 	Uint32 toggle_pixel(int x, int y);
-	void update(int, int, int, int);
+	void updateRect (int, int, int, int);
   Uint8 get_key ();
 
 private:
