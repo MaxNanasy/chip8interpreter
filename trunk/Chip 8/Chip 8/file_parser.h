@@ -22,7 +22,7 @@
 #include <fstream>
 #include <vector>
 
-#include "SDL.h"
+#include <SDL/SDL.h>
 
 using namespace std;
 

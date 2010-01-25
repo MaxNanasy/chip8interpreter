@@ -19,7 +19,8 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include <SDL.h>
+#include <SDL/SDL.h>
+
 #include "display.h"
 #include "sound.h"
 

@@ -16,10 +16,12 @@
 //    You should have received a copy of the GNU General Public License
 //    along with Chip-8 Interpreter.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <stdlib.h>
+#include <cstdlib>
 
-#include "SDL.h"
+#include <SDL/SDL.h>
+
 #include "display.h"
+#include "sound.h"
 #include "cpu.h"
 
 int main(int argc, char *argv[])
