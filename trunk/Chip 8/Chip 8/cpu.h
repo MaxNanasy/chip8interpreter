@@ -23,7 +23,7 @@
 #include "display.h"
 #include "sound.h"
 
-typedef Uint64 clock_time;
+typedef Uint32 clock_time;
 
 class CPU 
 {
@@ -37,7 +37,7 @@ private:
 	static const unsigned int KiB = 1024;
 	static const int START_CHAR_DATA = 0x00;
   static const int OPCODE_SIZE = 2;
-  static const clock_time CLOCK_RES = 1000000000;
+  static const clock_time CLOCK_RES = 1000;
   static const clock_time TIMER_RES = 60;
   static const float TIMER_RATIO = TIMER_RES / (1.0 * CLOCK_RES);
 
