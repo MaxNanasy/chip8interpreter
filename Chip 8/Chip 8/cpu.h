@@ -105,6 +105,7 @@ private:
   void store_BCD();
   void save_regs_to_mem();
   void load_regs_from_mem();
+  void invalid_opcode();
 };
 
 #endif // CPU_H
