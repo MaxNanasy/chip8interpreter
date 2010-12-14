@@ -36,6 +36,8 @@ public:
 
 private:
   static const unsigned int KiB = 1024;
+  static const unsigned int TOTAL_MEM_SIZE = 4*KiB;
+  static const unsigned int PROGRAM_START_ADDRESS = 512;
   static const int START_CHAR_DATA = 0x00;
   static const int OPCODE_SIZE = 2;
   static const clock_time CLOCK_RES = 1000;
@@ -52,7 +54,7 @@ private:
   Uint16 SP;      // Stack pointer
   Uint16 stack[16];  // Stack: Only used to store return addresses when subroutines are called.
   Uint16 cur_op;    // Current instruction
-  Uint8 mem[4 * KiB];  // Memory
+  Uint8 mem[TOTAL_MEM_SIZE];  // Memory
   bool program_active; // Program not terminated
   
   // These functions return parameters from the current opcode.

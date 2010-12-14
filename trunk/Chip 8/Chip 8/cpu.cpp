@@ -24,7 +24,7 @@
 #include "file_parser.h"
 
 CPU::CPU(Display& display, Sound& sound)
-  : display(display), sound (sound), t_delay(0), latest_delay_set (get_time ()), I_addr(0), PC(512), SP(15), program_active (true)
+  : display(display), sound (sound), t_delay(0), latest_delay_set (get_time ()), I_addr(0), PC(PROGRAM_START_ADDRESS), SP(15), program_active (true)
 {
   //Purposely empty.
 }
@@ -38,9 +38,9 @@ void CPU::load_rom(const char file_name[])
 {
   std::vector<Uint8> rom_data;
   std::vector<Uint8>::iterator it;
-  Uint8 *mem = &(this->mem[512]); // ROM loaded into memory at byte 513.
+  Uint8 *mem = &(this->mem[PROGRAM_START_ADDRESS]); // ROM loaded into memory at PROGRAM_START_ADDRESS.
 
-  unsigned int mem_available = 4*KiB - 512; // First 512 bytes are reserved for interpreter.
+  unsigned int mem_available = TOTAL_MEM_SIZE - PROGRAM_START_ADDRESS; // Bytes before PROGRAM_START_ADDRESS are reserved for interpreter.
 
   initialize_font();
   file_parser fp(file_name);
