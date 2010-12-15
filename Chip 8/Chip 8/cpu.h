@@ -64,6 +64,9 @@ private:
   inline int get_NN() { return (cur_op & 0x00FF); }
   inline int get_NNN() { return (cur_op & 0x0FFF); }
 
+  inline void skip_next_opcode() { PC += OPCODE_SIZE; }
+  inline void jump_to_address(int address) { PC = address - OPCODE_SIZE; }
+
   // METHODS
   void execute_opcode();  
   void initialize_font();
