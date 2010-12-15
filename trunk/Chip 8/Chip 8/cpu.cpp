@@ -299,7 +299,7 @@ void CPU::clear_screen()
 */
 void CPU::sub_return()
 {
-  PC = stack[++SP] - OPCODE_SIZE;
+  jump_to_address(stack[++SP]);
 }
 
 /*
@@ -319,7 +319,7 @@ void CPU::jump()
 {
   int NNN = get_NNN();
 
-  PC = NNN - OPCODE_SIZE;
+  jump_to_address(NNN);
 }
 
 /*
@@ -331,7 +331,7 @@ void CPU::sub_call()
   int NNN = get_NNN();
 
   stack[SP--] = PC;
-  PC = NNN - OPCODE_SIZE;
+  jump_to_address(NNN);
 }
 
 /*
@@ -344,7 +344,7 @@ void CPU::skip_equal_imm()
   int NN = get_NN();
 
   if (V[X] == NN)
-    PC += OPCODE_SIZE;
+    skip_next_opcode();
 }
 
 /*
@@ -357,7 +357,7 @@ void CPU::skip_not_equal_imm()
   int NN = get_NN();
 
   if (V[X] != NN)
-    PC += OPCODE_SIZE;
+    skip_next_opcode();
 }
 
 /*
@@ -370,7 +370,7 @@ void CPU::skip_equal()
   int Y = get_Y();
 
   if (V[X] == V[Y])
-    PC += OPCODE_SIZE;
+    skip_next_opcode();
 }
 
 /*
@@ -539,7 +539,7 @@ void CPU::skip_not_equal()
   int Y = get_Y();
 
   if (V[X] != V[Y])
-    PC += OPCODE_SIZE;
+    skip_next_opcode();
 }
 
 /*
@@ -561,7 +561,7 @@ void CPU::jump_offset()
 {
   int NNN = get_NNN();
 
-  PC = NNN + V[0] - OPCODE_SIZE;
+  jump_to_address(NNN + V[0]);
 }
 
 /*
@@ -628,7 +628,7 @@ void CPU::skip_on_pressed()
 */
 void CPU::skip_not_pressed()
 {
-  PC += OPCODE_SIZE; // For now, assume key is always unpressed.
+  skip_next_opcode(); // For now, assume key is always unpressed.
   // XXX: Fill this in.
 }
 
